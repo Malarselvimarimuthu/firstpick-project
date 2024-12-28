@@ -1,4 +1,4 @@
-import firebase from "/firebase/compat/app";
+import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCOyvpM1RtRLvFJu5Er1stLixpejUVH6jI",
@@ -10,4 +10,4 @@ const firebaseConfig = {
     measurementId: "G-JZ5DDQE0Z6"
   };
 
-const fire = firebase.initializeApp(firebaseConfig);
+const fire = initializeApp(firebaseConfig);
