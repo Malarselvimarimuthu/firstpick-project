@@ -5,6 +5,12 @@ export default {
   ],
   theme: {
     extend: {},
+    colors: {
+      customBlue: '#047BD5',
+      white: '#FFFF',
+      gray:'#DEDFE4',
+      lightgray:'#F3F4F9',
+    },
   },
   plugins: [],
 }
