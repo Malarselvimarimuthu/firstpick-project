@@ -1,0 +1,7 @@
+/* Hide the placeholder on smaller screens */
+@media (max-width: 640px) {
+    .custom-placeholder::placeholder {
+      opacity: 0; /* This will hide the placeholder text on small screens */
+    }
+  }
+  

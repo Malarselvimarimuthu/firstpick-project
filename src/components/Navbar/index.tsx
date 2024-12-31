@@ -17,7 +17,7 @@ export const Navbar = () =>
 
   return (
     <div>
-        <div className='w-full fixed bg-gray'>
+        <div className='w-full fixed bg-gray2'>
             <div className='max-w-7xl h-10 sm:px-6 lg:px-8 flex items-center justify-between mx-auto'>
                 {/* Menu Toggle for Mobile */}
 
