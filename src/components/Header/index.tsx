@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { GiShoppingCart } from "react-icons/gi";
+import { BsCart2 } from "react-icons/bs";
+import { FaRegUser } from "react-icons/fa6";
 import {
   MagnifyingGlassIcon,
   ShoppingCartIcon,
@@ -36,7 +39,7 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <nav className="bg-customBlue">
+    <nav className="bg-sky-500 fixed w-full z-50">
       <div className="flex h-14 items-center justify-between px-4 sm:px-6 md:px-8 lg:px-20">
         {/* Logo */}
         <div className="flex items-center">
@@ -56,20 +59,23 @@ const Header: React.FC = () => {
 
         {/* User Actions */}
         <div className="flex items-center space-x-2 sm:space-x-4">
-          <button className="bg-blue-500 font-semibold flex items-center px-2 sm:px-4 py-1 rounded text-white hover:bg-blue-600 font-sans">
-            <ShoppingCartIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-1 sm:mr-2" />
+          <button className="font-semibold flex items-center px-2 sm:px-4 py-1 rounded text-white  font-sans">
+            <BsCart2
+              className="h-6 w-6 sm:h-6 sm:w-6 mr-1 sm:mr-2"
+              style={{ strokeWidth: 0.5 }} 
+            />
             <span className="hidden sm:inline">Cart</span>
           </button>
 
-          <button className="bg-blue-500 flex font-semibold items-center px-2 sm:px-4 py-1 rounded text-white hover:bg-blue-600 font-sans">
-            <UserIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-1 sm:mr-2" />
+          <button className=" flex font-semibold items-center px-2 sm:px-4 py-1 rounded text-white  font-sans">
+            <FaRegUser className="h-5 w-5 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">Sign In</span>
           </button>
 
           <button
             id="dropdownButton"
             onClick={toggleDropdown}
-            className="bg-blue-500 flex items-center rounded text-white hover:bg-blue-600 font-sans p-2"
+            className=" flex items-center rounded text-white  font-sans p-2"
           >
             <EllipsisVerticalIcon className="h-6 w-6 sm:h-8 sm:w-8" />
           </button>
@@ -79,17 +85,16 @@ const Header: React.FC = () => {
       {/* Dropdown Menu */}
       <div
         id="dropdownMenu"
-        className={`absolute right-4 mt-2 w-48 bg-white shadow-lg rounded-md text-gray-900 z-10 transition-all duration-500 ease-in-out transform ${
-          isDropdownVisible
+        className={`absolute right-4 mt-2 w-48 bg-white shadow-lg rounded-md text-gray-900 z-10 transition-all duration-500 ease-in-out transform ${isDropdownVisible
             ? "translate-y-0 opacity-100 scale-100"
             : "-translate-y-5 opacity-0 scale-95 pointer-events-none"
-        }`}
+          }`}
       >
-        <ul className="py-1 bg-lightgray">
+        <ul className="py-1 bg-gray-100">
           <li>
             <a
               href="/contact"
-              className="block px-4 py-2 text-sm md:text-base hover:bg-gray1 transition-colors"
+              className="block px-4 py-2 text-sm md:text-base hover:bg-gray-200 transition-colors"
             >
               Contact
             </a>
@@ -97,7 +102,7 @@ const Header: React.FC = () => {
           <li>
             <a
               href="/order"
-              className="block px-4 py-2 text-sm md:text-base hover:bg-gray1 transition-colors"
+              className="block px-4 py-2 text-sm md:text-base hover:bg-gray-200 transition-colors"
             >
               Order
             </a>
