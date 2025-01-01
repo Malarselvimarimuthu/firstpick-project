@@ -3,6 +3,8 @@ import { lazy } from "react";
 const Home = lazy(() => import('../pages/HomePage'));
 const Cart = lazy(() => import('../pages/CartPage'));
 const Test = lazy(() => import('../pages/testPage'));
+const Billing = lazy(() => import('../pages/BillingDetails/BilligForm'));
+
 
 export const navigationRouts =  [
     {
@@ -19,9 +21,16 @@ export const navigationRouts =  [
         name: 'Test',
         path: '/test',
         component: <Test/>
+    },
+    {
+        name: 'Billing',
+        path: '/billing',
+        component: <Billing/>
+
     }
 ];
 
 export default {
     navigationRouts
 };
+

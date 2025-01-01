@@ -25,9 +25,9 @@ export const Navbar = () =>
     const [activeLink, setActiveLink] = useState<number | null>(null);
 
   return (
-    <div>
+    <div className='pt-14'>
 
-        <div className='w-full fixed bg-gray2'>
+        <div className='w-full fixed bg-gray-300 z-40'>
             <div className='max-w-7xl h-10 sm:px-6 lg:px-8 flex items-center justify-between mx-auto'>
 
                 {/* Menu Toggle for Mobile */}
@@ -37,19 +37,19 @@ export const Navbar = () =>
                 </div>
 
                 {/* Navigation Links */}
-                <ul className={`bg-gray2 md:flex md:ml-20 md:space-x-20 items-center justify-between w-full md:w-auto absolute md:static md:bg-transparent transition-all duration-700 ease-in-out ${
+                <ul className={`bg-gray-300 md:flex md:ml-20 md:space-x-20 items-center justify-between w-full md:w-auto absolute md:static md:bg-transparent transition-all duration-700 ease-in-out ${
                     isOpen? "top-10 left-0 w-full flex flex-col items-center py-5 bg-gray-200"
                     : "hidden"}`}>
                 {Links.map((link, index) => (
                     <li
                     key={index}
                     className={`font-semibold ${
-                        activeLink === index ? "text-customBlue" : "text-black"
+                        activeLink === index ? "text-sky-500" : "text-black"
                     }`}
                     >
                     <a
                         href={link.link}
-                        className="flex items-center h-10 hover:text-customBlue px-6 py-3 md:px-8 md:py-2 sm:w-full"
+                        className="flex items-center h-10 hover:text-sky-500 px-6 py-3 md:px-8 md:py-2 sm:w-full"
                         onClick={(e) => {
                         e.preventDefault();
                         setActiveLink(index);
