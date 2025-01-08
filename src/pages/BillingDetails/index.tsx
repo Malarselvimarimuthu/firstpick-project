@@ -11,7 +11,7 @@ const BillingFormPage: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row w-full shadow-xl p-6 lg:p-24 space-y-6 lg:space-y-0 mt-16 sm:mt-2">
       {/* Billing Form */}
-      <div className="w-full lg:w-1/2 bg-gray-100 p-8 rounded-lg shadow-xl">
+      <div className="w-full lg:w-1/2 bg-gray-200 p-8 rounded-lg shadow-xl">
         <h2 className="text-2xl font-semibold text-black mb-6">Billing Form</h2>
         <form className="space-y-4">
           <div>
@@ -71,7 +71,7 @@ const BillingFormPage: React.FC = () => {
           <div className="flex justify-between items-center mt-4">
             <button
               type="button"
-              className="w-1/3 bg-gray-300 text-black py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+              className="w-1/3 bg-red-400 text-black py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
             >
               Cancel
             </button>
