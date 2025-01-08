@@ -1,21 +1,33 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
 import { BsCart2 } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa6";
 import {
   MagnifyingGlassIcon,
-  ShoppingCartIcon,
-  UserIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/solid";
 import logo from "../../assets/images/Logo.png";
-import "./App.css"; // Import custom CSS (or add this style in your global CSS file)
+import "./index.css"; // Import custom CSS (or add this style in your global CSS file)
 
 const Header: React.FC = () => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
+  };
+  const navigate = useNavigate();
+  const handleCartClick = () => {
+    navigate('/cart'); // Redirect to the Cart page
+  };
+
+  const handleSignInClick = () => {
+    navigate('/login'); // Redirect to the Sign In page
+  };
+
+  const handleDropdownClick = () => {
+    // Handle dropdown toggle logic or redirect if needed
+    console.log('Dropdown clicked');
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -59,16 +71,18 @@ const Header: React.FC = () => {
 
         {/* User Actions */}
         <div className="flex items-center space-x-2 sm:space-x-4">
-          <button className="font-semibold flex items-center px-2 sm:px-4 py-1 rounded text-white  font-sans">
+          <button className="font-semibold flex items-center px-2 sm:px-4 py-1 rounded text-white  font-sans" onClick={handleCartClick} >
             <BsCart2
-              className="h-6 w-6 sm:h-6 sm:w-6 mr-1 sm:mr-2"
+              className="h-6 w-6 sm:h-6 sm:w-6 mr-1 sm:mr-2 "
               style={{ strokeWidth: 0.5 }} 
             />
-            <span className="hidden sm:inline">Cart</span>
+            <span className="hidden sm:inline ">Cart</span>
+            
           </button>
 
-          <button className=" flex font-semibold items-center px-2 sm:px-4 py-1 rounded text-white  font-sans">
-            <FaRegUser className="h-5 w-5 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
+          <button className=" flex font-semibold items-center px-2 sm:px-4 py-1 rounded text-white  font-sans" onClick={handleSignInClick}>
+            <FaRegUser className="h-5 w-5 sm:h-5 sm:w-5 mr-1 sm:mr-2" 
+             />
             <span className="hidden sm:inline">Sign In</span>
           </button>
 
@@ -91,9 +105,17 @@ const Header: React.FC = () => {
           }`}
       >
         <ul className="py-1 bg-gray-100">
+        <li>
+            <a
+              href="/profile"
+              className="block px-4 py-2 text-sm md:text-base hover:bg-gray-200 transition-colors"
+            >
+              Profile
+            </a>
+          </li>
           <li>
             <a
-              href="/contact"
+              href="/signup"
               className="block px-4 py-2 text-sm md:text-base hover:bg-gray-200 transition-colors"
             >
               Contact
@@ -101,7 +123,7 @@ const Header: React.FC = () => {
           </li>
           <li>
             <a
-              href="/order"
+              href="/billing"
               className="block px-4 py-2 text-sm md:text-base hover:bg-gray-200 transition-colors"
             >
               Order
