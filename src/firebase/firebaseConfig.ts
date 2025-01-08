@@ -22,26 +22,26 @@
 // const analytics = getAnalytics(app);
 
 // Import the functions you need from the SDKs you need
+
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getStorage, ref } from "firebase/storage";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCq8MuPIQMVEzGUSKBXO43A0diSuR0PIlc",
-  authDomain: "firstpick-db.firebaseapp.com",
-  databaseURL: "https://firstpick-db-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "firstpick-db",
-  storageBucket: "firstpick-db.firebasestorage.app",
-  messagingSenderId: "1092231436019",
-  appId: "1:1092231436019:web:90901ebc85ee0e81bd4986",
-  measurementId: "G-LQ8YCZSVTS"
+  apiKey: "AIzaSyAl63wpt_1SJJPpQcA9GVyAQ0w_4HMmWSY",
+  authDomain: "firstpick-database-b30a7.firebaseapp.com",
+  projectId: "firstpick-database-b30a7",
+  storageBucket: "firstpick-database-b30a7.firebasestorage.app",
+  messagingSenderId: "522610199972",
+  appId: "1:522610199972:web:7067463d3c0e9e42190531",
+  measurementId: "G-QR477N6PDQ"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const storage = getStorage();
+const storageRef = ref(storage);
 
 export default app;
+

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { GiShoppingCart } from "react-icons/gi";
 import { BsCart2 } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa6";
@@ -9,10 +9,21 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/solid";
 import logo from "../../assets/images/Logo.png";
-import "./App.css"; // Import custom CSS (or add this style in your global CSS file)
+import "./App.css"; 
+import { useNavigate } from 'react-router-dom';
 
-const Header: React.FC = () => {
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+}
+
+
+const Header=({ products }: { products: Product[] }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
@@ -31,7 +42,19 @@ const Header: React.FC = () => {
     }
   };
 
-  React.useEffect(() => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+      
+    if (value) {
+      navigate(`/search?q=${encodeURIComponent(value)}`);
+    }
+    else {
+      navigate('/'); 
+    }
+  };
+
+  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -46,16 +69,18 @@ const Header: React.FC = () => {
           <img src={logo} alt="Logo" className="w-20 sm:w-24 lg:w-40 h-28" />
         </div>
 
-        <div className="flex flex-1 justify-center px-4">
-          <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full rounded-full px-4 py-2 pl-10 text-gray-900 focus:outline-none font-sans custom-placeholder"
-            />
-            <MagnifyingGlassIcon className="absolute top-1/2 right-3 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
-          </div>
-        </div>
+      <div className="flex flex-1 justify-center px-4">
+      <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="w-full rounded-full px-4 py-2 pl-10 text-gray-900 focus:outline-none font-sans custom-placeholder"
+        />
+        <MagnifyingGlassIcon className="absolute top-1/2 right-3 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+      </div>
+    </div>
 
         {/* User Actions */}
         <div className="flex items-center space-x-2 sm:space-x-4">
