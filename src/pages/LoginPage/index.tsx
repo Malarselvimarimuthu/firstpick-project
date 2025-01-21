@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import {
   getAuth,
@@ -8,7 +6,7 @@ import {
   GoogleAuthProvider,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc,setDoc  } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import app from "../../firebase/firebaseConfig";
 import logo from "../../assets/images/cart.jpg";
@@ -44,14 +42,48 @@ const Login: React.FC = () => {
     }
   };
 
+  // const handleGoogleSignIn = async () => {
+  //   const auth = getAuth(app);
+  //   const provider = new GoogleAuthProvider();
+  //   const db = getFirestore(app);
+
+  //   try {
+  //     const result = await signInWithPopup(auth, provider);
+  //     const user = result.user;
+
+  //     const userDoc = await getDoc(doc(db, "users", user.uid));
+  //     if (userDoc.exists()) {
+  //       const userData = userDoc.data();
+  //       localStorage.setItem("user", JSON.stringify(userData));
+  //       alert("Login successful! Welcome, " + userData.username);
+  //     }
+
+  //     navigate("/profile");
+  //   } catch (error: any) {
+  //     console.error("Error logging in with Google:", error.message);
+  //     setError(`Login failed: ${error.message}`);
+  //   }
+  // };
+
+
   const handleGoogleSignIn = async () => {
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
-    const db = getFirestore(app);
+    
 
     try {
+      // Sign in with Google
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      const db = getFirestore(app);
+
+      // Store user data in Firestore after successful Google sign-in
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        username: user.displayName,
+        email: user.email,
+        createdAt: new Date().toISOString(),
+      });
 
       const userDoc = await getDoc(doc(db, "users", user.uid));
       if (userDoc.exists()) {
@@ -60,12 +92,25 @@ const Login: React.FC = () => {
         alert("Login successful! Welcome, " + userData.username);
       }
 
+      // Redirect to home or dashboard after successful Google sign-in
       navigate("/profile");
     } catch (error: any) {
-      console.error("Error logging in with Google:", error.message);
-      setError(`Login failed: ${error.message}`);
+      console.error("Error signing up with Google:", error.message);
+      setError(`Google Sign-In failed: ${error.message}`);
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+  
 
   const handleForgotPassword = async () => {
     const auth = getAuth(app);
@@ -131,7 +176,7 @@ const Login: React.FC = () => {
               alt="Google"
               className="inline-block w-6 h-6 mr-2"
             />
-            Log In with Google
+            Continue with Google
           </button>
           <div className="mt-4 text-center">
             <p>

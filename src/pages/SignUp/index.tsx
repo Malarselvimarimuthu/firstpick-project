@@ -217,7 +217,7 @@ const SignUp: React.FC = () => {
               alt="Google"
               className="inline-block w-6 h-6 mr-2"
             />
-            Sign Up with Google
+            Continue with Google
           </button>
 
           {/* Already have an account link */}
@@ -234,4 +234,13 @@ const SignUp: React.FC = () => {
 };
 
 export default SignUp;
+
+
+
+
+
+
+
+
+
 
