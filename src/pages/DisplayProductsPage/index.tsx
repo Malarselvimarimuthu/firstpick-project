@@ -21,7 +21,7 @@ function ProductDetails() {
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [mainImage, setMainImage] = useState<string>('');
   useEffect(() => {
     fetchProductDetails();
   }, [id]);
@@ -33,7 +33,9 @@ function ProductDetails() {
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        setProduct({ id: docSnap.id, ...docSnap.data() } as ProductDetail);
+        const productData = { id: docSnap.id, ...docSnap.data() } as ProductDetail;
+        setProduct(productData);
+        setMainImage(productData.mainImage);
       } else {
         setError("Product not found");
       }
@@ -50,38 +52,50 @@ function ProductDetails() {
   if (!product) return <div className="text-center p-4">Product not found</div>;
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+<div className="min-h-screen">
+  <div className="px-4 md:px-[10px] py-4">
+    <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg">
       {/* Back Button */}
       <button 
         onClick={() => navigate(-1)}
-        className="mb-4 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
+        className="mb-4 px-4 py-2 bg-gray-100 rounded-sm hover:bg-gray-200"
       >
         ← Back
       </button>
 
       <div className="grid md:grid-cols-2 gap-8">
         {/* Image Section */}
-        <div>
-          {/* Main Image */}
-          <img
-            src={product.mainImage}
-            alt={product.name}
-            className="w-full rounded-lg shadow-lg mb-4"
-          />
-
-          {/* Extra Images */}
-          <div className="grid grid-cols-4 gap-2">
+        <div className="flex flex-col-reverse md:flex-row gap-4">
+          {/* Thumbnail Images (Left Side) */}
+          <div className="flex md:flex-col gap-2 md:w-1/5">
+            <img
+              src={product.mainImage}
+              alt={product.name}
+              className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${
+                mainImage === product.mainImage ? 'border-2 border-blue-500' : 'border-2 border-gray-200'
+              }`}
+              onClick={() => setMainImage(product.mainImage)}
+            />
             {product.extraImages?.map((img, index) => (
               <img
                 key={index}
                 src={img}
                 alt={`${product.name} ${index + 1}`}
-                className="w-full h-24 object-cover rounded-lg cursor-pointer"
-                onClick={() => {
-                  // Optional: Implement image gallery/modal here
-                }}
+                className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${
+                  mainImage === img ? 'border-2 border-blue-500' : 'border-2 border-gray-200'
+                }`}
+                onClick={() => setMainImage(img)}
               />
             ))}
+          </div>
+
+          {/* Main Image (Right Side) */}
+          <div className="md:w-4/5">
+            <img
+              src={mainImage}
+              alt={product.name}
+              className="w-full rounded-lg shadow-lg"
+            />
           </div>
         </div>
 
@@ -95,11 +109,12 @@ function ProductDetails() {
           <div className="border-t pt-4 mt-4">
             <h2 className="text-xl font-semibold mb-2">Product Details</h2>
             <p className="text-gray-600">Category: {product.category}</p>
-            {/* Add more details as needed */}
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
   );
 }
 
