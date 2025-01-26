@@ -90,12 +90,14 @@ function ProductDetails() {
           </div>
 
           {/* Main Image (Right Side) */}
-          <div className="md:w-4/5">
+          <div className=''>
+          <div className="md:w-4/5 h-[500px] bg-gray-100">
             <img
               src={mainImage}
               alt={product.name}
-              className="w-full rounded-lg shadow-lg"
+              className="w-full h-full object-contain"
             />
+          </div>
           </div>
         </div>
 

@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import {Product} from '../../types/product';
 import app from '../../firebase/firebaseConfig';
 
 const firestore = getFirestore(app);
 
-interface Product {
-  id: string;
-  name: string;
-  price: string;
-  description: string;
-  mainImageUrl: string;
-  extraImageUrls: string[];
-  category: string;
-  productID?: string;
-  timestamp?: Date;
-}
+// interface Product {
+//   id: string;
+//   name: string;
+//   price: string;
+//   description: string;
+//   mainImageUrl: string;
+//   category: string;
+//   productID?: string;
+//   timestamp?: Date;
+// }
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
@@ -23,6 +23,7 @@ const SearchResults = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [stockStatus, setStockStatus] = useState<'available' | 'outOfStock'>('available');
   const navigate = useNavigate();
 
   // Fetch all products once
@@ -37,8 +38,7 @@ const SearchResults = () => {
       const filtered = products.filter((product) => {
         return (
           product.name.toLowerCase().includes(query) ||
-          product.category.toLowerCase().includes(query) ||
-          product.description.toLowerCase().includes(query)
+          product.category.toLowerCase().includes(query) 
         );
       });
       setFilteredProducts(filtered);
@@ -73,7 +73,6 @@ const SearchResults = () => {
         return (
           product.name.toLowerCase().includes(query) ||
           product.category.toLowerCase().includes(query) 
-        //   product.description.toLowerCase().includes(query)
         );
       });
       setFilteredProducts(filtered);
@@ -98,51 +97,93 @@ const SearchResults = () => {
   }
 
   return (
-    <div className="p-4 mt-16">
-      <h2 className="text-2xl font-bold mb-4">
-        Search Results for "{searchParams.get('q')}"
-      </h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="w-full px-2 sm:px-4 mt-14">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">
         {filteredProducts.map((product) => (
           <div 
             key={product.id} 
-            className="border rounded-lg p-4 shadow hover:shadow-lg transition-shadow cursor-pointer"
+            className="flex flex-row sm:flex-col 
+              bg-white rounded-sm 
+              hover:shadow-lg transition-shadow duration-300 
+              cursor-pointer overflow-hidden
+              h-[150px] sm:h-auto
+              w-full sm:w-[270px]
+              mx-auto"
             onClick={() => navigate(`/product/${product.id}`)}
           >
-            {/* Main Image */}
-            <img
-              src={product.mainImageUrl}
-              alt={product.name}
-              className="w-full h-48 object-cover rounded-lg mb-2"
-              loading="lazy"
-            />
-            
-            {/* Product Details */}
-            <h3 className="font-bold text-lg">{product.name}</h3>
-            <p className="text-gray-600">₹{product.price}</p>
-            <p className="text-sm text-gray-500 line-clamp-2">
-              {product.description}
-            </p>
-
-            {/* Category Tag */}
-            <div className="mt-2">
-              <span className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-600">
-                {product.category}
-              </span>
+            {/* Left Side - Image Container (50% width on mobile) */}
+            <div className="
+              w-1/2 sm:w-full 
+              h-full sm:h-[250px]
+              relative
+            ">
+              <img
+                src={product.mainImageUrl}
+                alt={product.name}
+                className="
+                  w-full 
+                  h-full
+                  object-contain
+                  bg-gray-200
+                "
+                loading="lazy"
+              />
             </div>
-
-            {/* Extra Images */}
-            <div className="flex gap-2 mt-2 overflow-x-auto">
-              {product.extraImageUrls?.map((url, index) => (
-                <img
-                  key={index}
-                  src={url}
-                  alt={`${product.name} extra ${index + 1}`}
-                  className="w-16 h-16 object-cover rounded flex-shrink-0"
-                  loading="lazy"
-                />
-              ))}
+  
+            {/* Right Side - Product Details (50% width on mobile) */}
+            <div className="
+              w-1/2 sm:w-full
+              p-3 sm:p-4 
+              flex flex-col 
+              justify-between
+              bg-white
+            ">
+              {/* Product Name */}
+              <div>
+                <h3 className="
+                  font-medium 
+                  text-gray-900 
+                  text-sm sm:text-lg 
+                  line-clamp-2
+                  mb-1
+                ">
+                  {product.name}
+                </h3>
+              </div>
+  
+              {/* Price and Stock Status */}
+              <div className="
+                mt-auto
+                flex flex-col gap-2
+                sm:flex-row sm:items-center 
+                sm:justify-between 
+                pt-2 
+                border-t border-gray-100
+              ">
+                {/* Price */}
+                <div className="
+                  text-base sm:text-lg 
+                  font-bold 
+                  text-gray-900
+                ">
+                  ₹{product.price}
+                </div>
+  
+                {/* Stock Status */}
+                <span className={`
+                px-2 py-1 pr-[6px]
+                rounded
+                text-[10px] sm:text-xs
+                font-medium
+                inline-block
+                ${stockStatus === 'available'
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
+                }
+              `}>
+                {stockStatus === 'available' ? 'In Stock' : 'Out of Stocks'} 
+              </span>
+              </div>
             </div>
           </div>
         ))}

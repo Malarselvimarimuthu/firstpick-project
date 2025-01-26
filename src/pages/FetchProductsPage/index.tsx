@@ -2,18 +2,10 @@ import  { useState, useEffect } from 'react';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import app from '../../firebase/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
+import {Product} from '../../types/product';
 
 const firestore = getFirestore(app);
 
-interface Product {
-  id: string;
-  name: string;
-  price: string;
-  description: string;
-  mainImageUrl: string;
-  extraImageUrls: string[];
-  category: string;
-}
 
 function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -68,57 +60,104 @@ function ProductList() {
 
 
   return (
-    <div className="mt-10 p-4">
-  
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1">
+    <div className="w-full px-2 sm:px-4 mt-14">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4">
         {products.map((product) => (
-          <div key={product.id} 
-          className="w-[270px] border rounded-sm shadow hover:shadow-lg transition-shadow cursor-pointer"
-          onClick={() => navigate(`/product/${product.id}`)}>
-
-            {/* Main Image */}
-            <div className="w-[270px] h-[270px] overflow-hidden">
-            <img
-              src={product.mainImageUrl}
-              alt={product.name}
-              className="w-full h-full object-cover rounded-sm"
-              loading="lazy"
-            />
-            </div>
-            
-        <div className="flex-1 p-3 flex flex-col">
-        {/* Product Name - Now takes 2 lines with ellipsis */}
-        <div className="mb-auto">
-          <h3 className="font-bold text-lg line-clamp-2 leading-tight">
-            {product.name}
-          </h3>
-        </div>
-
-        {/* Bottom Row: Price and Stock Status */}
-        <div className="flex justify-between items-center mt-2">
-          {/* Price */}
-          <p className="text-gray-800 font-semibold">₹{product.price}</p>
-
-          {/* Stock Status */}
-          <span 
-            className={`px-3 py-1 rounded-full text-sm ${
-              stockStatus === 'available'
-                ? 'bg-green-100 text-green-800'
-                : 'bg-red-100 text-red-800'
-            }`}
+          <div
+            key={product.id}
+            className={`
+              flex flex-row sm:flex-col 
+              bg-white rounded-sm 
+              hover:shadow-lg transition-shadow duration-300 
+              cursor-pointer overflow-hidden
+              h-[150px] sm:h-auto
+              w-full sm:w-[270px]
+              mx-auto
+            `}
+            onClick={() => navigate(`/product/${product.id}`)}
           >
-            {stockStatus === 'available' ? 'In Stock' : 'Out of Stock'}
-          </span>
-        </div>
-      </div>
-      
-
+            {/* Left Side - Image Container (50% width on mobile) */}
+            <div className="
+              w-1/2 sm:w-full 
+              h-full sm:h-[250px]
+              relative
+            ">
+              <img
+                src={product.mainImageUrl}
+                alt={product.name}
+                className="
+                  w-full 
+                  h-full
+                  object-contain
+                  bg-gray-200
+                "
+                loading="lazy"
+              />
+            </div>
+  
+            {/* Right Side - Product Details (50% width on mobile) */}
+            <div className="
+              w-1/2 sm:w-full
+              p-3 sm:p-4 
+              flex flex-col 
+              justify-between
+              bg-white
+            ">
+              {/* Product Name */}
+              <div>
+                <h3 className="
+                  font-medium 
+                  text-gray-900 
+                  text-sm sm:text-lg 
+                  line-clamp-2
+                  mb-1
+                ">
+                  {product.name}
+                </h3>
+              </div>
+  
+              {/* Price and Stock Status */}
+              <div className="
+                mt-auto
+                flex flex-col gap-2
+                sm:flex-row sm:items-center 
+                sm:justify-between 
+                pt-2 
+                border-t border-gray-100
+              ">
+                {/* Price */}
+                <div className="
+                  text-base sm:text-lg 
+                  font-bold 
+                  text-gray-900
+                ">
+                  ₹{product.price}
+                </div>
+  
+                {/* Stock Status */}
+                <span className={`
+                px-2 py-1 pr-[6px]
+                rounded
+                text-[10px] sm:text-xs
+                font-medium
+                inline-block
+                ${stockStatus === 'available'
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
+                }
+              `}>
+                {stockStatus === 'available' ? 'In Stock' : 'Out of Stocks'} 
+              </span>
+              </div>
+            </div>
           </div>
         ))}
       </div>
-
+  
       {products.length === 0 && (
-        <p className="text-center text-gray-500">No products found</p>
+        <div className="text-center text-gray-500 py-10">
+          No products found
+        </div>
       )}
     </div>
   );
