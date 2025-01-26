@@ -187,7 +187,7 @@ interface Product {
   category: string;
 }
 
-const Header = ({ products }: { products: Product[] }) => {
+const Header = ({  }: { }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState<null | { name: string }>(null); // Store user data if logged in
