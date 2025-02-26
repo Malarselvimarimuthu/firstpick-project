@@ -13,7 +13,7 @@ const Profile = lazy(() => import('../pages/Profile'));
 const Contact = lazy(() => import('../pages/ContactPage'));
 const CustomerQuery = lazy(() => import('../pages/CustomerQuery'));
 const CategoryProducts = lazy(() => import('../pages/CategoryProducts'));
-
+const CreateProductsPage = lazy(()=>import('../pages/CreateProductsPage'));
 
 export const navigationRouts =  [
     {
@@ -80,6 +80,11 @@ export const navigationRouts =  [
         name: 'CustomerQuery',
         path: '/customerquery',
         component: <CustomerQuery/>
+    },
+    {
+        name: 'CreateProducts',
+        path: '/createproducts',
+        component: <CreateProductsPage/>
     }
 ];
 

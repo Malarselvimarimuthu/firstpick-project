@@ -52,71 +52,72 @@ function ProductDetails() {
   if (!product) return <div className="text-center p-4">Product not found</div>;
 
   return (
-<div className="min-h-screen">
-  <div className="px-4 md:px-[10px] py-4">
-    <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg">
-      {/* Back Button */}
-      <button 
-        onClick={() => navigate(-1)}
-        className="mb-4 px-4 py-2 bg-gray-100 rounded-sm hover:bg-gray-200"
-      >
-        ← Back
-      </button>
+    <div className="min-h-screen">
+      <div className="px-4 md:px-[10px] py-4">
+        <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Image Section */}
+            <div className="flex flex-col-reverse md:flex-row gap-4">
+              {/* Thumbnail Images (Left Side) */}
+              <div className="flex md:flex-col gap-4 md:w-1/5 md:h-[400px] justify-center items-center">
+                {/* Main Image Thumbnail */}
+                <div className="w-24 h-24 transform transition-all duration-300 hover:scale-110 flex items-center justify-center">
+                  <div className="w-20 h-20 overflow-hidden"> {/* Added container with overflow hidden */}
+                    <img
+                      src={product.mainImage}
+                      alt={product.name}
+                      className={`w-full h-full object-contain rounded-sm cursor-pointer ${
+                        mainImage === product.mainImage ? 'border-2 border-blue-500' : 'border-2 border-gray-200'
+                      }`}
+                      onMouseEnter={() => setMainImage(product.mainImage)}
+                    />
+                  </div>
+                </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Image Section */}
-        <div className="flex flex-col-reverse md:flex-row gap-4">
-          {/* Thumbnail Images (Left Side) */}
-          <div className="flex md:flex-col gap-2 md:w-1/5">
-            <img
-              src={product.mainImage}
-              alt={product.name}
-              className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${
-                mainImage === product.mainImage ? 'border-2 border-blue-500' : 'border-2 border-gray-200'
-              }`}
-              onClick={() => setMainImage(product.mainImage)}
-            />
-            {product.extraImages?.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`${product.name} ${index + 1}`}
-                className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${
-                  mainImage === img ? 'border-2 border-blue-500' : 'border-2 border-gray-200'
-                }`}
-                onClick={() => setMainImage(img)}
-              />
-            ))}
-          </div>
+                {/* Extra Images */}
+                {product.extraImages?.map((img, index) => (
+                  <div 
+                    key={index} 
+                    className="w-24 h-24 transform transition-all duration-300 hover:scale-110 flex items-center justify-center"
+                  >
+                    <div className="w-20 h-20 overflow-hidden"> {/* Added container with overflow hidden */}
+                      <img
+                        src={img}
+                        alt={`${product.name} ${index + 1}`}
+                        className={`w-full h-full object-contain rounded-sm cursor-pointer ${
+                          mainImage === img ? 'border-2 border-blue-500' : 'border-2 border-gray-200'
+                        }`}
+                        onMouseEnter={() => setMainImage(img)}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-          {/* Main Image (Right Side) */}
-          <div className=''>
-          <div className="md:w-4/5 h-[500px] bg-gray-100">
-            <img
-              src={mainImage}
-              alt={product.name}
-              className="w-full h-full object-contain"
-            />
-          </div>
-          </div>
-        </div>
+              {/* Main Image (Right Side) */}
+             
+              <div className="md:w-4/5 h-[400px]">
+              <div className='w-full h-full rounded-lg border border-gray-100'>
+                <img
+                  src={mainImage}
+                  alt={product.name}
+                  className="w-full h-full object-contain transition duration-1000"
+                />
+              </div>
+              </div>
+            </div>
 
-        {/* Product Details */}
-        <div>
-          <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-          <p className="text-2xl text-blue-600 mb-4">₹{product.price}</p>
-          <p className="text-gray-600 mb-4">{product.description}</p>
-          
-          {/* Additional Details */}
-          <div className="border-t pt-4 mt-4">
-            <h2 className="text-xl font-semibold mb-2">Product Details</h2>
-            <p className="text-gray-600">Category: {product.category}</p>
+            {/* Product Details */}
+            <div>
+              <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+              <p className="text-2xl text-blue-600 mb-4">₹{product.price}</p>
+              <p className="text-gray-600 mb-4">{product.description}</p>
+              
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
   );
 }
 
