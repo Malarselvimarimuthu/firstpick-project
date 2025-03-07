@@ -1,26 +1,14 @@
 import { lazy } from "react";
 
-const Home = lazy(() => import('../pages/HomePage'));
-
+const Cart = lazy(() =>import('../pages/CartPage') );
 const Test = lazy(() => import('../pages/CreateProductsPage'));
 const Billing = lazy(() => import('../pages/BillingDetails'));
-const Products = lazy(() => import('../pages/FetchProductsPage'));
-const ProductDetails = lazy(() => import('../pages/DisplayProductsPage'));
-const SearchResults = lazy(() => import('../pages/SearchResults'));
-const Login = lazy(() => import('../pages/LoginPage'));
-const SignUp = lazy(() => import('../pages/SignUp'));
 const Profile = lazy(() => import('../pages/Profile'));
-const Contact = lazy(() => import('../pages/ContactPage'));
 const CustomerQuery = lazy(() => import('../pages/CustomerQuery'));
-const CategoryProducts = lazy(() => import('../pages/CategoryProducts'));
 const CreateProductsPage = lazy(()=>import('../pages/CreateProductsPage'));
 
 export const navigationRouts =  [
-    {
-        name: 'Home',
-        path: '/mm',
-        component: <Home/>
-    },
+
     {
         name: 'Test',
         path: '/test',
@@ -33,48 +21,9 @@ export const navigationRouts =  [
 
     },
     {
-        name: 'Products',
-        path: '/',
-        component: <Products/>
-    },
-    {
-        name: 'ProductDetails',
-        path: '/product/:id',
-        component: <ProductDetails/>
-    },
-    {
-        name: 'CategoryProducts',
-        path: '/:category',
-        component: <CategoryProducts/>
-    },
-    {
-        name: 'Search',
-        path: '/search',
-        component: <SearchResults />
-    },
-    {
-        name: 'Login',
-        path: '/login',
-        component: <Login/>
-
-    },
-    {
-        name: 'SignUp',
-        path: '/signup',
-        component: <SignUp/>
-
-    },
-    {
         name: 'Profile',
         path: '/profile',
         component: <Profile/>
-
-    },
-    {
-        name: 'Contact',
-        path: '/contact',
-        component: <Contact/>
-
     },
     {
         name: 'CustomerQuery',
@@ -85,6 +34,11 @@ export const navigationRouts =  [
         name: 'CreateProducts',
         path: '/createproducts',
         component: <CreateProductsPage/>
+    },
+    {
+        name: 'CartProducts',
+        path: '/cart',
+        component: <Cart/>
     }
 ];
 

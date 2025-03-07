@@ -1,47 +1,45 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { auth } from "../firebase/firebaseConfig"; // Import Firebase auth module
-import { onAuthStateChanged, User } from "firebase/auth";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { getAuth, onAuthStateChanged, User, signOut } from "firebase/auth";
+import  app  from "../firebase/firebaseConfig"; // Import Firebase App instance
 
-// Define the type for the context
+const auth = getAuth(app);
+
 interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-}
-
-// Define the type for the AuthProvider props
-interface AuthProviderProps {
-  children: ReactNode; // Children can be any valid React node
+    user: User | null;
+    loading: boolean;
+    logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Create a provider component with children prop type
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user); // Set the user state
-      setLoading(false); // Set loading to false once the auth state is determined
-    });
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+            setLoading(false);
+        });
 
-    // Cleanup the subscription on component unmount
-    return unsubscribe;
-  }, []);
+        return () => unsubscribe();
+    }, []);
 
-  return (
-    <AuthContext.Provider value={{ user, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    const logout = async () => {
+        await signOut(auth);
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, loading, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
-// Create a custom hook to use the auth context
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
+    return context;
 };
