@@ -50,7 +50,7 @@ export const navigationRouts = [
         path: '/contact',
         component: <Contact/>
     },
-
+    
 ];
 
 export default {

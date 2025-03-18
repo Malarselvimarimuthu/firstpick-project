@@ -1,24 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { getAuth, signOut } from "firebase/auth";
 
 const Profile: React.FC = () => {
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    // Retrieve user data from localStorage
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      const parsedUser = JSON.parse(userData);
-      setUser(parsedUser);
-    } else {
-      // Redirect to login page if no user is found
-      window.location.href = "/login";
-    }
-  }, []);
-
-  const handleLogout = () => {
+  const { user } = useAuth();
+ 
+  const handleLogout = async  () => {
     // Clear user data from localStorage
+    const auth = getAuth();
+    await signOut(auth);
     localStorage.removeItem("user");
-    // Redirect to login page
+    // Redirect to login page 
     window.location.href = "/login";
   };
 
@@ -31,7 +23,7 @@ const Profile: React.FC = () => {
       <div className="bg-gray-200 shadow-xl rounded-xl p-8 mb-8 text-center transform hover:scale-105 transition duration-300 ease-in-out">
         <h1 className="text-3xl font-semibold text-gray-800 mb-6">Profile</h1>
 
-        {/* Profile Picture */}
+
         <div className="mb-6">
           <img
             src={user.photoURL || "https://static-00.iconduck.com/assets.00/user-icon-1024x1024-dtzturco.png"}
@@ -40,17 +32,15 @@ const Profile: React.FC = () => {
           />
         </div>
 
-        {/* User Info */}
         <div className="space-y-4">
           <p className="text-lg text-gray-800">
-            <strong className="font-semibold text-gray-600">Name:</strong> {user.username || "John Doe"}
+            <strong className="font-semibold text-gray-600">Name:</strong> {user.displayName }
           </p>
           <p className="text-lg text-gray-800">
-            <strong className="font-semibold text-gray-600">Email:</strong> {user.email || "user@example.com"}
+            <strong className="font-semibold text-gray-600">Email:</strong> {user.email }
           </p>
         </div>
 
-        {/* Logout Button */}
         <div className="mt-6">
           <button
             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300"

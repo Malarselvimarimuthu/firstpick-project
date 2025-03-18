@@ -5,6 +5,7 @@ import SuspenseLayout from "./layouts/SuspenseLayout";
 import MainLayout from "./layouts/MainLayout";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/protected.routes";
+import adminRoutes from "./routes/admin.routes";
 
 
 function App() {
@@ -31,6 +32,17 @@ function App() {
                             </Route>
                         </Route>
                     </Route>
+
+                    <Route element={<SuspenseLayout />}>
+                        <Route element={<ProtectedRoute adminOnly={true} />}>
+                            <Route element={<MainLayout />}>
+                                {adminRoutes.navigationRouts.map((data) => (
+                                    <Route path={data.path} key={data.name} element={data.component} />
+                                ))}
+                            </Route>
+                        </Route>
+                    </Route>
+                    
                 </Routes>
             </AuthProvider>
         </BrowserRouter>
