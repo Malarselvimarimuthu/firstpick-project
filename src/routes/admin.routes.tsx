@@ -7,7 +7,7 @@ export const navigationRouts =  [
 
     {
         name: 'CartProducts',
-        path: '/home',
+        path: '/',
         component: <Home/>
     }
 ];

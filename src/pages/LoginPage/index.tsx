@@ -73,7 +73,7 @@ const Login: React.FC = () => {
           const userData = userDoc.data();
           localStorage.setItem("user", JSON.stringify(userData));
           alert("Login successful! Welcome, " + userData.username);
-          navigate("/profile");
+          navigate("/");
         }
       } else {
         setMessage("Please verify your email before logging in.");
