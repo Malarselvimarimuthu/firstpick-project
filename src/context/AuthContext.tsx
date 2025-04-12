@@ -7,7 +7,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 interface User extends FirebaseUser {
-  isAdmin?: boolean; // ✅ Add isAdmin field
+  isAdmin?: boolean; 
 }
 
 interface AuthContextType {

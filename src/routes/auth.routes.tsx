@@ -6,6 +6,7 @@ const Billing = lazy(() => import('../pages/BillingDetails'));
 const Profile = lazy(() => import('../pages/Profile'));
 const CustomerQuery = lazy(() => import('../pages/CustomerQuery'));
 const CreateProductsPage = lazy(()=>import('../pages/CreateProductsPage'));
+const OrderSuccessPage= lazy(()=>import('../pages/OrderSuccessfull'));
 
 export const navigationRouts =  [
 
@@ -39,6 +40,11 @@ export const navigationRouts =  [
         name: 'CartProducts',
         path: '/cart',
         component: <Cart/>
+    },
+    {
+        name: 'OrderSuccessPage',
+        path: '/order-success',
+        component: <OrderSuccessPage/>
     }
 ];
 
