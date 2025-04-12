@@ -1,50 +1,37 @@
-# React + TypeScript + Vite
+# 🛍️ FirstPick - E-Commerce Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+**FirstPick** is an E-Commerce Web Application built using the React(TSX) and Firebase. The platform is designed to provide a smooth user experience for customers to browse, buy products, and for admins to manage the store.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🚧 **Note:** This project is currently under active development. New features and improvements are being added frequently.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 🚀 Features (Planned & In Development)
 
-- Configure the top-level `parserOptions` property like this:
+### 👥 User Side
+- 🛒 Browse products with filters and search
+- 📦 Add to cart and place orders
+- 🔒 User authentication (Register/Login)
+- 🌟 View order history
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### 🛠️ Admin Panel
+- 📊 Dashboard with analytics
+- 🧾 Manage products, categories, and inventory
+- 👥 Manage user accounts
+- 📦 View and manage customer orders
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+---
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## 🛠️ Tech Stack
+
+| Layer                 | Tech Used                     |
+|-----------------------|-------------------------------|
+| Frontend              | React(TSX), Tailwind CSS      |
+| Backend/Database      | Firebase ?Firebase Storage    |
+| Authentication        | Firebase Auth                 |
+
+
+---
+## DEMO
