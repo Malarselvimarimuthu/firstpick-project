@@ -49,6 +49,19 @@ const BillingFormPage: React.FC = () => {
     landmark: '',
     postalCode: ''
   });
+
+  // Error state management
+  const [formErrors, setFormErrors] = useState({
+    fullName: '',
+    phoneNumber: '',
+    email: '',
+    address: '',
+    landmark: '',
+    postalCode: '',
+  });  
+  const [generalError, setGeneralError] = useState('');
+  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -114,8 +127,72 @@ const BillingFormPage: React.FC = () => {
     }));
   };
 
+  const validateForm = () => {
+    const errors: any = {};
+  
+    // Full Name - Required + Letters/Spaces Only
+    if (!formData.fullName.trim()) {
+      errors.fullName = "Full name is required";
+    } else if (!/^[a-zA-Z\s.'-]+$/.test(formData.fullName.trim())) {
+      errors.fullName = "Only letters, spaces, and .'- are allowed";
+    }
+  
+    // Phone Number - Required + 10 digits
+    if (!formData.phoneNumber.trim()) {
+      errors.phoneNumber = "Phone number is required";
+    } else if (!/^\d{10}$/.test(formData.phoneNumber.trim())) {
+      errors.phoneNumber = "Phone number must be 10 digits";
+    }
+  
+    // Email - Required + Valid format
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())
+    ) {
+      errors.email = "Invalid email format";
+    }
+  
+    // Address - Required
+    if (!formData.address.trim()) {
+      errors.address = "Address is required";
+    }
+
+    // LandMark - Required
+    if (!formData.landmark.trim()) {
+      errors.landmark = "LandMark is required";
+    }
+  
+    // Postal Code - Required + 6 digits
+    if (!formData.postalCode.trim()) {
+      errors.postalCode = "Postal code is required";
+    } else if (!/^\d{6}$/.test(formData.postalCode.trim())) {
+      errors.postalCode = "Postal code must be 6 digits";
+    }
+  
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      setGeneralError(" Please fix the errors above before submitting.");
+      return false;
+    } else {
+      setGeneralError('');
+      return true;
+    }
+
+    // return Object.keys(errors).length === 0; // Valid if no errors
+  };
+  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const isValid = validateForm();
+
+    if (!isValid) {
+      console.log("Validation failed");
+      return; 
+    }
+
     setIsLoading(true);
 
     try {
@@ -186,8 +263,11 @@ const BillingFormPage: React.FC = () => {
               onChange={handleInputChange}
               className="mt-1 block h-10 w-full pl-3 border-black rounded-md shadow-sm focus:ring-black focus:border-black"
               placeholder="Enter your name"
-              required
+              
             />
+              {formErrors.fullName && (
+                  <p className="text-red-600 text-sm">{formErrors.fullName}</p>
+                )}
           </div>
           <div>
             <label className="block text-sm font-medium text-black">Phone Number</label>
@@ -199,8 +279,11 @@ const BillingFormPage: React.FC = () => {
               className="mt-1 block h-10 w-full pl-3 border-black rounded-md shadow-sm focus:ring-black focus:border-black"
               placeholder="Enter your phone number"
               onKeyDown={handleKeyDown}
-              required
+              
             />
+              {formErrors.phoneNumber && (
+                  <p className="text-red-600 text-sm">{formErrors.phoneNumber}</p>
+                )}
           </div>
           <div>
             <label className="block text-sm font-medium text-black">Email</label>
@@ -211,8 +294,11 @@ const BillingFormPage: React.FC = () => {
               onChange={handleInputChange}
               className="mt-1 block h-10 w-full pl-3 border-black rounded-md shadow-sm focus:ring-black focus:border-black"
               placeholder="Enter your email"
-              required
+              
             />
+            {formErrors.email && (
+                  <p className="text-red-600 text-sm">{formErrors.email}</p>
+                )}
           </div>
           <div>
             <label className="block text-sm font-medium text-black">Address</label>
@@ -223,8 +309,11 @@ const BillingFormPage: React.FC = () => {
               className="mt-1 block w-full pl-3 border-black rounded-md shadow-sm focus:ring-black focus:border-black"
               rows={4}
               placeholder="Enter your address"
-              required
+           
             ></textarea>
+            {formErrors.address && (
+                  <p className="text-red-600 text-sm">{formErrors.address}</p>
+                )}
           </div>
           <div>
             <label className="block text-sm font-medium text-black">Landmark</label>
@@ -236,6 +325,9 @@ const BillingFormPage: React.FC = () => {
               className="mt-1 block h-10 w-full pl-3 border-black rounded-md shadow-sm focus:ring-black focus:border-black"
               placeholder="Enter the landmark"
             />
+            {formErrors.landmark && (
+                  <p className="text-red-600 text-sm">{formErrors.landmark}</p>
+                )}
           </div>
           <div>
             <label className="block text-sm font-medium text-black">Postal Code</label>
@@ -246,8 +338,11 @@ const BillingFormPage: React.FC = () => {
               onChange={handleInputChange}
               className="mt-1 block h-10 w-full pl-3 border-black rounded-md shadow-sm focus:ring-black focus:border-black"
               placeholder="Enter your postal code"
-              required
+              
             />
+            {formErrors.postalCode && (
+                  <p className="text-red-600 text-sm">{formErrors.postalCode}</p>
+                )}
           </div>
 
           {/* Order Summary Section */}
@@ -269,7 +364,12 @@ const BillingFormPage: React.FC = () => {
             </div>
           </div>
 
+        
+          {generalError && (
+              <p className="text-red-600 text-sm font-medium my-2">{generalError}</p>
+            )}
           <div className="flex justify-between items-center mt-4">
+            
             <button
               type="button"
               onClick={() => navigate(-1)}
@@ -277,6 +377,7 @@ const BillingFormPage: React.FC = () => {
             >
               Cancel
             </button>
+
             <button
             type="submit"
             disabled={isLoading}

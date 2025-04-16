@@ -3,7 +3,7 @@ import app from '../../firebase/firebaseConfig';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
-import createProductBg from './createproductbg.webp'; // Import the image
+import createProductBg from './../../assets/images/createProductBg.jpg'; // Import the image
 
 const firestore = getFirestore(app);
 const storage = getStorage(app);
@@ -93,7 +93,7 @@ function ProductUpload() {
             }
 
             const productID = uuidv4();
-            const category = "CHOPPING_BOARD";
+            const category = "WATER_BOTTLES";
 
             // Upload main image to Storage
             const mainImageUrl = await uploadImageToStorage(

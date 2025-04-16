@@ -46,7 +46,7 @@ function ProductList() {
       setLoading(false);
     }
   };
-
+  
   if (loading) {
     return <div className="text-center p-4">Loading...</div>;
   }
