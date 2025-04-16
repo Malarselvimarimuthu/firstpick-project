@@ -15,27 +15,14 @@ const OrderSuccessPage: React.FC = () => {
   const { orderId, totalAmount } = location.state as LocationState;
 
   useEffect(() => {
-    // Confetti effect
-    const duration = 3 * 1000;
-    const animationEnd = Date.now() + duration;
-
-    const interval: NodeJS.Timeout = setInterval(() => {
-      const timeLeft = animationEnd - Date.now();
-
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
-      }
-
-      confetti({
-        particleCount: 50,
-        spread: 80,
-        origin: { y: 0.6 },
-        colors: ['#FFD700', '#FFA500', '#FF6B6B', '#4169E1', '#8A2BE2']
-      });
-    }, 250);
-
-    return () => clearInterval(interval);
+    confetti({
+      particleCount: 100,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: ['#FFD700', '#FFA500', '#FF6B6B', '#4169E1', '#8A2BE2']
+    });
   }, []);
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E8F5E9] to-[#C8E6C9] flex items-center justify-center p-4">
@@ -74,7 +61,7 @@ const OrderSuccessPage: React.FC = () => {
               <span className="text-blue-900 font-semibold">{orderId}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Amount Paid:</span>
+              <span className="text-gray-600">Total Ammount:</span>
               <span className="text-blue-900 font-semibold">
                 ₹{totalAmount.toFixed(2)}
               </span>

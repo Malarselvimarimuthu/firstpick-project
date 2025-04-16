@@ -65,16 +65,40 @@ const BillingFormPage: React.FC = () => {
     const userId = auth.currentUser.uid;
     const cartRef = doc(firestore, 'carts', userId);
     const cartSnap = await getDoc(cartRef);
-
+  
     if (cartSnap.exists()) {
       const items = cartSnap.data().items;
-      setCartItems(items);
-      const total = items.reduce((acc: number, item: CartItem) => 
+  
+      // Fetch product details for each cart item
+      const productPromises = items.map(async (item: { id: string, quantity: number }) => {
+        const productRef = doc(firestore, 'products', item.id);
+        const productSnap = await getDoc(productRef);
+  
+        if (productSnap.exists()) {
+          const productData = productSnap.data();
+          return {
+            id: item.id,
+            name: productData.name,
+            price: productData.price,
+            quantity: item.quantity,
+          };
+        } else {
+          return null;
+        }
+      });
+  
+      const products = await Promise.all(productPromises);
+      const filteredProducts = products.filter((p) => p !== null) as CartItem[];
+  
+      setCartItems(filteredProducts);
+  
+      const total = filteredProducts.reduce((acc: number, item: CartItem) =>
         acc + (item.price * item.quantity), 0
       );
       setTotalPrice(total);
     }
   };
+  
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (!/^[0-9]*$/.test(event.key) && event.key !== "Backspace" && event.key !== "Tab") {
@@ -286,12 +310,13 @@ const BillingFormPage: React.FC = () => {
                 />
               </svg>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-black">Free Delivery</h3>
-              <p className="text-sm text-black mt-2">
-                Enjoy free delivery on all orders above $50 and within a 20 km radius.
+            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900 p-4 rounded-lg shadow-md animate-bounce-slow">
+              <h3 className="text-lg font-bold">🚚 Only Cash On Delivery</h3>
+              <p className="text-sm mt-2">
+                Swipe your heart, not your card — pay cash when it lands! 🛬💵 (Cash on Delivery only!)
               </p>
             </div>
+
           </div>
 
           {/* Second Card */}

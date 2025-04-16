@@ -63,23 +63,23 @@ function ProductDetails() {
       alert('You must be logged in to add items to the cart.');
       return;
     }
-
+  
     setAddingToCart(true);
     const userId = auth.currentUser.uid;
     const cartRef = doc(firestore, 'carts', userId);
-    
+  
     try {
       const cartSnap = await getDoc(cartRef);
       let cartItems = cartSnap.exists() ? cartSnap.data().items || [] : [];
-
+  
       const existingItemIndex = cartItems.findIndex((item: any) => item.id === product?.id);
-
+  
       if (existingItemIndex !== -1) {
         cartItems[existingItemIndex].quantity += quantity;
       } else {
-        cartItems.push({ ...product, quantity: quantity });
+        cartItems.push({ id: product?.id, quantity }); // Only storing id and quantity
       }
-
+  
       await setDoc(cartRef, { items: cartItems });
       alert('Added to cart successfully!');
     } catch (error) {
@@ -89,7 +89,7 @@ function ProductDetails() {
       setAddingToCart(false);
     }
   };
-
+  
   const handleBuyNow = () => {
     if (!auth.currentUser) {
       alert('You must be logged in to purchase items.');

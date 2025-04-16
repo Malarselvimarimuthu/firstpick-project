@@ -39,7 +39,33 @@ function Cart() {
     const cartSnap = await getDoc(cartRef);
 
     if (cartSnap.exists()) {
-      setCartItems(cartSnap.data().items);
+      const cartData = cartSnap.data();
+      const cartItemsData = cartData.items || [];
+  
+      // Fetch product details for each item
+      const productPromises = cartItemsData.map(async (item: { id: string, quantity: number }) => {
+        const productRef = doc(firestore, 'products', item.id); // assuming your products are in 'products' collection
+        const productSnap = await getDoc(productRef);
+  
+        if (productSnap.exists()) {
+          const productData = productSnap.data();
+          return {
+            id: item.id,
+            name: productData.name,
+            price: productData.price,
+            mainImage: productData.mainImage,
+            quantity: item.quantity,
+          };
+        } else {
+          console.warn(`Product not found for id: ${item.id}`);
+          return null; // or handle missing product
+        }
+      });
+  
+      const products = await Promise.all(productPromises);
+      const filteredProducts = products.filter((p) => p !== null); // remove nulls
+  
+      setCartItems(filteredProducts as CartItem[]);
     }
     setLoading(false);
   };
