@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
-// In cart page change ProceedToCheckout validation 
+// In cart page change ProceedToCheckout validation  , Error
 // Check for In Stock Error
 // Update "/ " page on clicking logo
 // Change UI of DisplayProductPage

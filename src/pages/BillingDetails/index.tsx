@@ -33,6 +33,7 @@ interface BillingDetails {
   address: string;
   landmark: string;
   postalCode: string;
+  orderEmpty:string;
 }
 
 const BillingFormPage: React.FC = () => {
@@ -47,7 +48,8 @@ const BillingFormPage: React.FC = () => {
     email: '',
     address: '',
     landmark: '',
-    postalCode: ''
+    postalCode: '',
+    orderEmpty:''
   });
 
   // Error state management
@@ -58,6 +60,7 @@ const BillingFormPage: React.FC = () => {
     address: '',
     landmark: '',
     postalCode: '',
+    orderEmpty:''
   });  
   const [generalError, setGeneralError] = useState('');
   
@@ -119,14 +122,22 @@ const BillingFormPage: React.FC = () => {
     }
   };
 
+  // Handle Errors and Input Change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+
+    setFormErrors(prev => ({
+      ...prev,
+      [name]: ''
+    }));
+  
   };
 
+//  Validate the Errors
   const validateForm = () => {
     const errors: any = {};
   
@@ -168,6 +179,10 @@ const BillingFormPage: React.FC = () => {
       errors.postalCode = "Postal code is required";
     } else if (!/^\d{6}$/.test(formData.postalCode.trim())) {
       errors.postalCode = "Postal code must be 6 digits";
+    }
+
+    if(cartItems.length === 0){
+      errors.orderEmpty ="Choose atleast one item to proceed";
     }
   
     setFormErrors(errors);
@@ -347,22 +362,28 @@ const BillingFormPage: React.FC = () => {
 
           {/* Order Summary Section */}
           <div className="mt-8 border-t pt-4">
-            <h3 className="text-lg font-semibold text-black mb-3">Order Summary</h3>
-            <div className="bg-white p-4 rounded-md">
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex justify-between mb-2">
-                  <span>{item.name} x {item.quantity}</span>
-                  <span>₹{(item.price * item.quantity).toFixed(2)}</span>
-                </div>
-              ))}
-              <div className="border-t mt-2 pt-2">
-                <div className="flex justify-between font-semibold">
-                  <span>Total Amount:</span>
-                  <span>₹{totalPrice.toFixed(2)}</span>
-                </div>
+          <h3 className="text-lg font-semibold text-black mb-3">Order Summary</h3>
+          <div className="bg-white p-4 rounded-md">
+
+            {formErrors.orderEmpty && (
+              <p className="text-red-600 text-sm mb-2">{formErrors.orderEmpty}</p>
+            )}
+
+            {cartItems.map((item) => (
+              <div key={item.id} className="flex justify-between mb-2">
+                <span>{item.name} x {item.quantity}</span>
+                <span>₹{(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
+
+            <div className="border-t mt-2 pt-2">
+              <div className="flex justify-between font-semibold">
+                <span>Total Amount:</span>
+                <span>₹{totalPrice.toFixed(2)}</span>
               </div>
             </div>
           </div>
+        </div>
 
         
           {generalError && (
@@ -379,12 +400,13 @@ const BillingFormPage: React.FC = () => {
             </button>
 
             <button
-            type="submit"
-            disabled={isLoading}
-            className="w-1/3 bg-sky-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
-              >
-            {isLoading ? 'Placing Order...' : 'Place Order'}
-          </button>
+              type="submit"
+              disabled={isLoading}
+              className={`w-1/3 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black
+                ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-sky-500 hover:bg-blue-600'}`}
+            >
+              {isLoading ? 'Placing Order...' : 'Place Order'}
+            </button> 
 
           </div>
         </form>

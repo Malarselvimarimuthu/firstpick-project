@@ -22,6 +22,7 @@ function Cart() {
   const [cartItems, setCartItems] = useState<CartItem[ ]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPrice, setTotalPrice] = useState(0);
+  const[proceedError,setProceedError] = useState("");
   
   
   useEffect(() => {
@@ -255,11 +256,25 @@ function Cart() {
             <span>₹{totalPrice}</span>
           </div>
           <button
-              onClick={() => navigate('/billing')}
-              className="w-full mt-4 bg-sky-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+              onClick={() => {
+                if (cartItems.length > 0) {
+                  setProceedError("");  
+                  navigate('/billing');
+                } else {
+                  setProceedError("Please select at least one item to proceed.");
+                  
+                }
+              }}
+              className={`w-full mt-4 text-white py-2 px-4 rounded-md 
+                          ${cartItems.length > 0 ? 'bg-sky-500 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'}`}
+              
             >
               Proceed to Checkout
             </button>
+            {proceedError && (
+              <p className="text-red-600 text-sm mt-2">{proceedError}</p>
+            )}
+
           <div className="flex justify-between text-sm text-gray-500">
            
           </div>
