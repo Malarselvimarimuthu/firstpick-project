@@ -1,5 +1,6 @@
 export interface Product
 {
+    stockStatus: string;
     id: string;
     name: string;
     price: string;

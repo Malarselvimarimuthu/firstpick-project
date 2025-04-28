@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import app from '../../firebase/firebaseConfig';
-import { useAuth } from '../../context/AuthContext';
+
 import { useNavigate } from 'react-router-dom';
 import Lottie from 'lottie-react';
 import noOrders from '../../assets/images/noOrders.json'; // adjust path as needed
@@ -111,7 +111,7 @@ function Cart() {
   const removeItem = async (itemId: string) => {
     if (!auth.currentUser) return;
 
-    const userId = auth.currentUser.uid;
+    const userId = auth.currentUser.uid; 
     const cartRef = doc(firestore, 'carts', userId);
 
     // Filter out the item to be removed
@@ -149,7 +149,7 @@ function Cart() {
             {/* Left Column - Cart Items */}
             <div className="w-full lg:flex-grow">
               <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm">
-                <h1 className="text-xl sm:text-2xl font-bold">Shopping Bag</h1>
+                <h1 className="text-xl sm:text-2xl font-bold"></h1>
                 <p className="text-gray-600 mb-4">{cartItems.length} items in your bag.</p>
   
                 {/* Header Row */}
@@ -225,11 +225,9 @@ function Cart() {
                 <button
                   className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold"
                   onClick={() => {
-                    if (cartItems.length > 0) {
-                      navigate('/checkout');
-                    } else {
-                      setProceedError("Your cart is empty.");
-                    }
+                    
+                      navigate('/billing');
+                  
                   }}
                 >
                   Proceed to Checkout

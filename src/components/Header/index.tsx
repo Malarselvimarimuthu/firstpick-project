@@ -10,11 +10,7 @@ import {
 import logo from "../../assets/images/Logo.png";
 import "./index.css";
 
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-}
+
 
 const Header = ({  }: { }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -82,7 +78,11 @@ const Header = ({  }: { }) => {
       <div className="flex h-14 items-center justify-between px-4 sm:px-6 md:px-8 lg:px-20">
         {/* Logo */}
         <div className="flex items-center">
-          <img src={logo} alt="Logo" className="w-20 sm:w-24 lg:w-40 h-28" />
+          <img 
+            src={logo} 
+            alt="Logo" 
+            className="w-20 sm:w-24 lg:w-40 h-28 cursor-pointer" 
+            onClick={() => navigate('/')}/>
         </div>
 
         {/* Search */}
@@ -160,10 +160,10 @@ const Header = ({  }: { }) => {
           </li>
           <li>
             <a
-              href="/billing"
+              href="/orders"
               className="block px-4 py-2 text-sm md:text-base hover:bg-gray-200 transition-colors"
             >
-              Order
+              Orders
             </a>
           </li>
         </ul>

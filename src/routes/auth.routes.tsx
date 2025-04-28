@@ -7,6 +7,7 @@ const Profile = lazy(() => import('../pages/Profile'));
 const CustomerQuery = lazy(() => import('../pages/CustomerQuery'));
 const CreateProductsPage = lazy(()=>import('../pages/CreateProductsPage'));
 const OrderSuccessPage= lazy(()=>import('../pages/OrderSuccessfull'));
+const OrderPage = lazy(()=> import('../pages/OrderPage'));
 
 export const navigationRouts =  [
 
@@ -45,6 +46,11 @@ export const navigationRouts =  [
         name: 'OrderSuccessPage',
         path: '/order-success',
         component: <OrderSuccessPage/>
+    },
+    {
+        name: 'OrdersPage',
+        path:'/orders',
+        component: <OrderPage/>
     }
 ];
 

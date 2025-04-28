@@ -10,7 +10,7 @@ function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [stockStatus, setStockStatus] = useState<'available' | 'outOfStock'>('available');
+  // const [stockStatus, setStockStatus] = useState<'available' | 'outOfStock'>('available');/
 
   const navigate = useNavigate();
 
@@ -34,6 +34,7 @@ function ProductList() {
           extraImageUrls: data.extraImages || [],
           category: data.category,
           productID: data.productID,
+          stockStatus:data.stockStatus,
           timestamp: data.timestamp?.toDate()
         };
       });
@@ -95,9 +96,9 @@ function ProductList() {
                 </span>
                 <span className={`
                   text-[10px] sm:text-xs px-2 py-1 rounded font-medium
-                  ${stockStatus === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
+                  ${product.stockStatus === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
                 `}>
-                  {stockStatus === 'available' ? 'In Stock' : 'Out of Stock'}
+                  {product.stockStatus === 'available' ? 'In Stock' : 'Out of Stock'}
                 </span>
               </div>
             </div>

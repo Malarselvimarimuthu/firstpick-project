@@ -29,7 +29,7 @@ interface CartItem {
 interface BillingDetails {
   fullName: string;
   phoneNumber: string;
-  email: string;
+  email: string;  
   address: string;
   landmark: string;
   postalCode: string;

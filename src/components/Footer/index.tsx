@@ -6,7 +6,7 @@ import { faFacebookF, faTwitter, faInstagram } from '@fortawesome/free-brands-sv
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8 mt-4">
+    <footer className="bg-gray-800 text-white py-8 ">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Us Section */}
