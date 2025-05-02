@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')!).render(
 // About Page
 // Edit Footer
 // Update Pop Ups on AddToCart , Etc.. 
-// Payments Option
+// Payments Option - Noneed
 
 // Admin Modules
 // Verify Admin Email 
