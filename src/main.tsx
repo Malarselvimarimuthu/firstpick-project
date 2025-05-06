@@ -18,14 +18,16 @@ createRoot(document.getElementById('root')!).render(
 // Update "/ " page on clicking logo - Done
 // Change UI of DisplayProductPage - Done 
 
-// Design Orders page - mention status of product - change UI - 
+// Design Orders page - mention status of product -  [ change UI ]
 // Design a verification page after billing page - also enable edit option there -optional
 // About Page
 // Edit Footer
 // Update Pop Ups on AddToCart , Etc.. 
 // Payments Option - Noneed
 
-// Admin Modules
+
+
+// Admin Modules 
 // Verify Admin Email 
 // Design Navbar for Admin
 // Edit Navbar for Admin

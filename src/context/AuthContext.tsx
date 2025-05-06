@@ -6,8 +6,18 @@ import app from "../firebase/firebaseConfig";
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Define the structure of your Firestore user data
+interface UserData {
+  uid: string;
+  username: string | null;
+  email: string | null;
+  isAdmin: string;
+  createdAt: string;
+}
+
+// Extend FirebaseUser with our custom properties
 interface User extends FirebaseUser {
-  isAdmin?: boolean; 
+  isAdmin: boolean; // Changed to boolean for easier conditional checks
 }
 
 interface AuthContextType {
@@ -23,25 +33,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        // 🔹 Fetch additional user data from Firestore
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const userDoc = await getDoc(userDocRef);
+      try {
+        if (currentUser) {
+          const userDocRef = doc(db, "users", currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
 
-        const isAdmin = userDoc.exists() ? userDoc.data().isAdmin || false : false;
+          // Convert string "true"/"false" to boolean
+          const isAdmin = userDoc.exists() ? 
+            userDoc.data().isAdmin === "true" : false;
 
-        const userData: User = {
-          ...currentUser,
-          isAdmin, // ✅ Store isAdmin status
-        };
+          const userData: User = {
+            ...currentUser,
+            isAdmin, // Store as boolean
+          };
 
-        setUser(userData);
-        localStorage.setItem("user", JSON.stringify(userData));
-      } else {
+          setUser(userData);
+          localStorage.setItem("user", JSON.stringify(userData));
+        } else {
+          setUser(null);
+          localStorage.removeItem("user");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
         setUser(null);
         localStorage.removeItem("user");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();

@@ -5,7 +5,7 @@ const Test = lazy(() => import('../pages/CreateProductsPage'));
 const Billing = lazy(() => import('../pages/BillingDetails'));
 const Profile = lazy(() => import('../pages/Profile'));
 const CustomerQuery = lazy(() => import('../pages/CustomerQuery'));
-const CreateProductsPage = lazy(()=>import('../pages/CreateProductsPage'));
+
 const OrderSuccessPage= lazy(()=>import('../pages/OrderSuccessfull'));
 const OrderPage = lazy(()=> import('../pages/OrderPage'));
 
@@ -31,11 +31,6 @@ export const navigationRouts =  [
         name: 'CustomerQuery',
         path: '/customerquery',
         component: <CustomerQuery/>
-    },
-    {
-        name: 'CreateProducts',
-        path: '/createproducts',
-        component: <CreateProductsPage/>
     },
     {
         name: 'CartProducts',

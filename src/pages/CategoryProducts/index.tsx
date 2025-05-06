@@ -22,6 +22,8 @@ const CategoryProducts = () => {
         return 'CASHEW_NUTS';
       case 'choppingboard':
         return 'CHOPPING_BOARD';
+      case 'invisiblenecklace':
+        return 'INVISIBLE_NACKLACE';
       default:
         return '';
     }

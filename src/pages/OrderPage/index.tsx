@@ -122,6 +122,7 @@ const OrdersTable: React.FC = () => {
             key={order.id} 
             className="bg-blue-50 rounded-xl shadow-xl border-2 border-gray-200 p-6 hover:shadow-2xl transition-all duration-300 relative"
           >
+            
             {/* Order Content */}
             <div className={`transition-opacity duration-300 ${selectedOrder === order.id ? 'opacity-0' : 'opacity-100'}`}>
               {/* Order Summary Section */}

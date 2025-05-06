@@ -19,7 +19,7 @@ export const Navbar = () =>
     let Links:Link[] = [
         {name: 'Water Bottles' , link : '/waterbottle',icon: WaterBottle },
         {name: 'Cashew Nuts' , link : '/cashewnuts',icon:CashewNuts },
-        {name: 'Invisible Necklace' , link : '/necklace',icon:Necklace },
+        {name: 'Invisible Necklace' , link : '/invisiblenecklace',icon:Necklace },
         {name: 'Chopping Board' , link : '/choppingboard',icon:ChoppingBoard },
     ]
 

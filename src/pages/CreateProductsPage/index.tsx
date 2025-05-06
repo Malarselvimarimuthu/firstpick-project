@@ -7,7 +7,7 @@ import createProductBg from './../../assets/images/createProductBg.jpg'; // Impo
 
 const firestore = getFirestore(app);
 const storage = getStorage(app);
-const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB in bytes
+const MAX_FILE_SIZE = 3 * 1024 * 1024;
 
 function ProductUpload() {
     const [productName, setProductName] = useState<string>('');
@@ -20,6 +20,7 @@ function ProductUpload() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [selectedCategory,setSelectedCategory] = useState<string>('WATER_BOTTLES');
 
     // Upload Image to Storage
     const uploadImageToStorage = async (file: File, path: string) => {
@@ -68,6 +69,14 @@ function ProductUpload() {
         }
     };
 
+    // category Options
+    const CATEGORY_OPTIONS = [
+        { value: 'WATER_BOTTLES', label: 'Water Bottles' },
+        { value: 'CASHEW_NUTS', label: 'Cashew Nuts' },
+        { value: 'CHOPPING_BOARD', label: 'Chopping Board' },
+        { value: 'INVISIBLE_NACKLACE', label: 'Invisible Necklace' }
+    ];
+
     const handleSave = async () => {
         setError(null);
         setIsLoading(true);
@@ -93,7 +102,7 @@ function ProductUpload() {
             }
 
             const productID = uuidv4();
-            const category = "WATER_BOTTLES";
+            const category = selectedCategory;
 
             // Upload main image to Storage
             const mainImageUrl = await uploadImageToStorage(
@@ -162,178 +171,205 @@ function ProductUpload() {
     }, [numExtraImages]);
 
     return (
-        <div className="min-h-screen bg-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-            <div
-                className="rounded-md shadow-xl overflow-hidden"
+        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto rounded-lg shadow-xl overflow-hidden">
+            <div 
+                className="relative"
                 style={{
-                    backgroundImage: `url(${createProductBg})`, // Use the imported image
-                    width: '75%', // Takes up 3/4 of the screen
+                    backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(${createProductBg})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                 }}
             >
-                <div className="p-10">
-                    <h2 className="text-3xl font-extrabold text-gray-800 text-center mb-6">Product Upload</h2>
+                <div className="p-6 sm:p-8">
+                    <h2 className="text-2xl font-semibold text-gray-800 text-center mb-6">
+                        Product Upload
+                    </h2>
 
-                    {/* Error Display */}
                     {error && (
                         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
                             {error}
                         </div>
                     )}
 
-                    {/* Product Name */}
-                    <div className="mb-4">
-                        <label htmlFor="productName" className="block text-lg font-extrabold text-gray-800 mb-2">
-                            Product Name
-                        </label>
-                        <input
-                            type="text"
-                            id="productName"
-                            value={productName}
-                            onChange={(e) => setProductName(e.target.value)}
-                            placeholder="Product Name"
-                            className="shadow appearance-none border rounded w-full py-3 px-3 text-black leading-tight focus:outline-none focus:shadow-outline text-lg bg-transparent font-extrabold"
-                        />
-                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Name and Price in one row */}
+                        <div>
+                            <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-1">
+                                Product Name
+                            </label>
+                            <input
+                                type="text"
+                                id="productName"
+                                value={productName}
+                                onChange={(e) => setProductName(e.target.value)}
+                                placeholder="Enter product name"
+                                className="shadow-sm w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            />
+                        </div>
 
-                    {/* Product Price */}
-                    <div className="mb-4">
-                        <label htmlFor="productPrice" className="block text-lg font-extrabold text-gray-800 mb-2">
-                            Product Price
-                        </label>
-                        <input
-                            type="number"
-                            id="productPrice"
-                            value={productPrice}
-                            onChange={(e) => setProductPrice(e.target.value)}
-                            placeholder="Product Price"
-                            className="shadow appearance-none border rounded w-full py-3 px-3 text-black leading-tight focus:outline-none focus:shadow-outline text-lg bg-transparent font-extrabold"
-                        />
-                    </div>
+                        <div>
+                            <label htmlFor="productPrice" className="block text-sm font-medium text-gray-700 mb-1">
+                                Product Price
+                            </label>
+                            <input
+                                type="number"
+                                id="productPrice"
+                                value={productPrice}
+                                onChange={(e) => setProductPrice(e.target.value)}
+                                placeholder="Enter price"
+                                className="shadow-sm w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            />
+                        </div>
 
-                    {/* Product Description */}
-                    <div className="mb-4">
-                        <label htmlFor="productDescription" className="block text-lg font-extrabold text-gray-800 mb-2">
-                            Product Description
-                        </label>
-                        <textarea
-                            id="productDescription"
-                            value={productDescription}
-                            onChange={(e) => setProductDescription(e.target.value)}
-                            placeholder="Product Description"
-                            className="shadow appearance-none border rounded w-full py-3 px-3 text-black leading-tight focus:outline-none focus:shadow-outline text-lg bg-transparent font-extrabold"
-                        />
-                    </div>
+                        {/* Description takes full width */}
+                        <div className="md:col-span-2">
+                            <label htmlFor="productDescription" className="block text-sm font-medium text-gray-700 mb-1">
+                                Product Description
+                            </label>
+                            <textarea
+                                id="productDescription"
+                                value={productDescription}
+                                onChange={(e) => setProductDescription(e.target.value)}
+                                placeholder="Enter product description"
+                                rows={4}
+                                className="shadow-sm w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            />
+                        </div>
 
-                    {/* Main Image Input */}
-                    <div className="mb-4">
-                        <label className="block text-lg font-extrabold text-gray-800 mb-2">Main Product Image</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleMainImageChange}
-                            className="shadow appearance-none border rounded w-full py-3 px-3 text-black leading-tight focus:outline-none focus:shadow-outline text-lg bg-transparent"
-                        />
-                    </div>
-
-                    {/* Radio Buttons for Extra Images */}
-                    <div className="mb-4">
-                        <label className="block text-lg font-extrabold text-gray-800 mb-2">Number of Extra Images</label>
-                        <div className="flex gap-4">
-                            {[2, 3, 4].map((number) => (
-                                <label key={number} className="flex items-center text-gray-800 text-lg font-bold">
+                        {/* Images section */}
+                        <div className="md:col-span-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Main Image */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Main Product Image
+                                    </label>
                                     <input
-                                        type="radio"
-                                        value={number}
-                                        checked={numExtraImages === number}
-                                        onChange={(e) => setNumExtraImages(Number(e.target.value))}
-                                        className="mr-2"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleMainImageChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                                     />
-                                    {number}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
+                                </div>
 
-                    {/* Extra Image Inputs */}
-                    <div className="mb-4">
-                        <label className="block text-lg font-extrabold text-gray-800 mb-2">Extra Images</label>
-                        {Array.from({ length: numExtraImages }).map((_, index) => (
-                            <div key={index} className="mb-2">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => handleExtraImageChange(e, index)}
-                                    className="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-lg bg-transparent"
-                                />
+                                {/* Number of Extra Images */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Number of Extra Images
+                                    </label>
+                                    <div className="flex gap-4 items-center">
+                                        {[2, 3, 4].map((number) => (
+                                            <label key={number} className="inline-flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    value={number}
+                                                    checked={numExtraImages === number}
+                                                    onChange={(e) => setNumExtraImages(Number(e.target.value))}
+                                                    className="mr-1"
+                                                />
+                                                <span className="text-sm text-gray-700">{number}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
-                        ))}
-                    </div>
+                        </div>
 
-                    {/* Stock Status Input */}
-                    <div className="mb-4">
-                        <label className="block text-lg font-extrabold text-gray-800 mb-2">Stock Status</label>
-                        <div className="flex gap-4">
-                            <label className="flex items-center text-gray-800 text-lg font-bold">
-                                <input
-                                    type="radio"
-                                    value="available"
-                                    checked={stockStatus === 'available'}
-                                    onChange={(e) => setStockStatus(e.target.value as 'available' | 'outOfStock')}
-                                    className="mr-2"
-                                />
-                                Available
+                        {/* Extra Images */}
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Extra Images
                             </label>
-                            <label className="flex items-center text-gray-800 text-lg font-bold">
-                                <input
-                                    type="radio"
-                                    value="outOfStock"
-                                    checked={stockStatus === 'outOfStock'}
-                                    onChange={(e) => setStockStatus(e.target.value as 'available' | 'outOfStock')}
-                                    className="mr-2"
-                                />
-                                Out of Stock
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {Array.from({ length: numExtraImages }).map((_, index) => (
+                                    <input
+                                        key={index}
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleExtraImageChange(e, index)}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Category Selection */}
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Product Category
                             </label>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {CATEGORY_OPTIONS.map((category) => (
+                                    <label key={category.value} className="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            value={category.value}
+                                            checked={selectedCategory === category.value}
+                                            onChange={(e) => setSelectedCategory(e.target.value)}
+                                            className="form-radio h-4 w-4 text-blue-600"
+                                        />
+                                        <span className="ml-2 text-sm text-gray-700">
+                                            {category.label}
+                                        </span>
+                                    </label>
+                                ))}
+                            </div> 
+                        </div>
+
+                        {/* Stock Status */}
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Stock Status
+                            </label>
+                            <div className="flex gap-4">
+                                {['available', 'outOfStock'].map((status) => (
+                                    <label key={status} className="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            value={status}
+                                            checked={stockStatus === status}
+                                            onChange={(e) => setStockStatus(e.target.value as 'available' | 'outOfStock')}
+                                            className="mr-1"
+                                        />
+                                        <span className="text-sm text-gray-700">
+                                            {status === 'available' ? 'Available' : 'Out of Stock'}
+                                        </span>
+                                    </label>
+                                ))}
+                            </div>
                         </div>
                     </div>
+
+
 
                     {/* Save Button */}
-                    <button
-                        onClick={handleSave}
-                        disabled={isLoading}
-                        className={`bg-blue-500 hover:bg-blue-700 text-white font-extrabold py-3 px-4 rounded focus:outline-none focus:shadow-outline text-lg ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        type="button"
-                    >
-                        {isLoading ? (
-                            <div className="flex items-center">
-                                <svg
-                                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    ></path>
-                                </svg>
-                                {isUploading ? 'Uploading...' : 'Saving...'}
-                            </div>
-                        ) : (
-                            'Save Product'
-                        )}
-                    </button>
+                    <div className="mt-6 flex justify-center">
+                        <button
+                            onClick={handleSave}
+                            disabled={isLoading}
+                            className={`w-full md:w-auto px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                            type="button"
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                    </svg>
+                                    {isUploading ? 'Uploading...' : 'Saving...'}
+                                </div>
+                            ) : (
+                                'Save Product'
+                            )}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
     );
 }
 

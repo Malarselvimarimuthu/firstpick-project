@@ -1,5 +1,6 @@
 export interface Product
 {
+    extraImageUrls: any;
     stockStatus: string;
     id: string;
     name: string;
