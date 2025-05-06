@@ -43,8 +43,6 @@ interface Order {
   billingDetails: BillingDetails;
 }
 
-
-
 const OrdersTable: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
