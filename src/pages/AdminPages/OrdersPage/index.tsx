@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getFirestore, collection, getDocs, query, where, Timestamp, updateDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, Timestamp, updateDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { MdCancel, MdDoneAll, MdEdit, MdLocalShipping, MdPending, MdSearch, MdFileDownload, MdPrint } from 'react-icons/md';
+import { MdCancel, MdDoneAll, MdEdit, MdLocalShipping, MdPending, MdFileDownload, MdPrint } from 'react-icons/md';
 import app from '../../../firebase/firebaseConfig';
 
 const firestore = getFirestore(app);
@@ -45,6 +45,22 @@ interface SearchFilters {
   dateFrom: string;
   dateTo: string;
 }
+
+const formatDate = (timestamp: Timestamp) => {
+  if (!timestamp) return '';
+  try {
+    return timestamp.toDate().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return '';
+  }
+};
 
 const OrdersTable: React.FC = () => {
   // States
@@ -118,10 +134,14 @@ const OrdersTable: React.FC = () => {
   const getFilteredOrders = () => {
     return orders.filter(order => {
       const orderDate = order.createdAt.toDate();
+
+      const searchTerm = searchFilters.customerName.toLowerCase();  
+      const customerMatch = 
+      order.billingDetails.fullName.toLowerCase().includes(searchTerm) || 
+      order.billingDetails.email.toLowerCase().includes(searchTerm);
       return (
         order.id.toLowerCase().includes(searchFilters.orderId.toLowerCase()) &&
-        order.billingDetails.fullName.toLowerCase().includes(searchFilters.customerName.toLowerCase()) &&
-        order.billingDetails.email.toLowerCase().includes(searchFilters.email.toLowerCase()) &&
+        customerMatch &&
         (searchFilters.items === '' || order.items.some(item => 
           item.name.toLowerCase().includes(searchFilters.items.toLowerCase())
         )) &&
@@ -243,160 +263,247 @@ const OrdersTable: React.FC = () => {
   );
 
   return (
-    <div className="container mx-auto p-6 mt-10">
-      {/* Header */}
-      <div className="mb-6 flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Orders Management</h2>
-        <div className="text-sm text-gray-500">
-          Showing {filteredOrders.length} of {orders.length} orders
-        </div>
-      </div>
+<div className="container mx-auto p-4 md:p-6 mt-5 md:mt-10">
+  {/* Header */}
+  <div className="mb-4 md:mb-6 flex flex-col md:flex-row justify-between items-start md:items-center">
+    <h2 className="text-xl md:text-2xl font-bold mb-2 md:mb-0">Orders Management</h2>
+    <div className="text-sm text-gray-500">
+      Showing {filteredOrders.length} of {orders.length} orders
+    </div>
+  </div>
 
-      {/* Search Filters */}
-      <div className="mb-6 bg-white p-4 rounded-lg shadow">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Add all your search input fields here */}
-          {/* Example of one filter field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Order ID</label>
+  {/* Table with Sticky Header and Filters */}
+  <div className="overflow-x-auto bg-white rounded-lg shadow">
+    <table className="min-w-full">
+      <thead className="bg-gray-50">
+        {/* Filter Row */}
+        <tr className="border-b">
+          <th className="px-4 py-2">
             <input
               type="text"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              className="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               value={searchFilters.orderId}
               onChange={(e) => setSearchFilters(prev => ({ ...prev, orderId: e.target.value }))}
-              placeholder="Search by Order ID"
+              placeholder="Search Order ID"
             />
-          </div>
-          {/* Add other filter fields similarly */}
-        </div>
-      </div>
+          </th>
+          <th className="px-4 py-2">
+            <input
+              type="text"
+              className="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              value={searchFilters.customerName}
+              onChange={(e) => setSearchFilters(prev => ({ ...prev, customerName: e.target.value }))}
+              placeholder="Search Customer"
+            />
+          </th>
+          <th className="px-4 py-2">
+            <input
+              type="text"
+              className="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              value={searchFilters.items}
+              onChange={(e) => setSearchFilters(prev => ({ ...prev, items: e.target.value }))}
+              placeholder="Search Items"
+            />
+          </th>
+          <th className="px-4 py-2">
+            <input
+              type="number"
+              className="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              value={searchFilters.totalAmount}
+              onChange={(e) => setSearchFilters(prev => ({ ...prev, totalAmount: e.target.value }))}
+              placeholder="Amount"
+            />
+          </th>
+          <th className="px-4 py-2">
+            <select
+              className="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              value={searchFilters.status}
+              onChange={(e) => setSearchFilters(prev => ({ ...prev, status: e.target.value }))}
+            >
+              <option value="">All Statuses</option>
+              {statusOptions.map((status) => (
+                <option key={status} value={status}>{status}</option>
+              ))}
+            </select>
+          </th>
+          <th className="px-4 py-2">
+            <div className="flex space-x-2">
+              <input
+                type="date"
+                className="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                value={searchFilters.dateFrom}
+                onChange={(e) => setSearchFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
+              />
+              <input
+                type="date"
+                className="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                value={searchFilters.dateTo}
+                onChange={(e) => setSearchFilters(prev => ({ ...prev, dateTo: e.target.value }))}
+              />
+            </div>
+          </th>
+        </tr>
+        {/* Header Row */}
+        <tr>
+          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
+          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+        </tr>
+      </thead>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white shadow-md rounded-lg">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {currentOrders.map((order) => (
-              <tr key={order.id} className="hover:bg-gray-50">
-                {/* Add all your table cells here */}
-                {/* Example of status cell */}
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {editingOrderId === order.id ? (
-                    <div className="flex items-center space-x-2">
-                      <select
-                        className="border rounded px-2 py-1 text-sm"
-                        value={order.status}
-                        onChange={(e) => handleStatusUpdate(order.id, e.target.value as Order['status'])}
-                      >
-                        {statusOptions.map((status) => (
-                          <option key={status} value={status}>{status}</option>
-                        ))}
-                      </select>
-                      <button
-                        onClick={() => setEditingOrderId(null)}
-                        className="text-gray-500 hover:text-gray-700"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <span className={`px-2 inline-flex items-center text-xs leading-5 font-semibold rounded-full 
-                        ${order.status === 'delivered' ? 'bg-green-100 text-green-800' : 
-                          order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          order.status === 'shipped' ? 'bg-blue-100 text-blue-800' : 
-                          'bg-red-100 text-red-800'}`}>
-                        <StatusIcon status={order.status} />
-                        <span className="ml-1">{order.status}</span>
-                      </span>
-                      <button
-                        onClick={() => setEditingOrderId(order.id)}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <MdEdit className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {currentOrders.map((order) => (
+          <tr key={order.id} className="hover:bg-gray-50">
+            <td className="px-4 py-4 whitespace-nowrap">
+              <span className="text-sm text-gray-900">{order.id}</span>
+            </td>
 
-      {/* Pagination */}
-      <div className="mt-6 flex items-center justify-between">
-        <div className="flex items-center">
-          <select
-            className="border rounded px-2 py-1 text-sm"
-            value={ordersPerPage}
-            onChange={(e) => setOrdersPerPage(Number(e.target.value))}
-          >
-            <option value={10}>10 per page</option>
-            <option value={20}>20 per page</option>
-            <option value={50}>50 per page</option>
-            <option value={100}>100 per page</option>
-          </select>
-        </div>
+            <td className="px-4 py-4 whitespace-nowrap">
+              <div className="flex items-center">
+                <div>
+                  <div className="text-sm font-medium text-gray-900">{order.billingDetails.fullName}</div>
+                  <div className="text-sm text-gray-500">{order.billingDetails.email}</div>
+                </div>
+              </div>
+            </td>
 
-        <div className="flex items-center space-x-2">
-          <button
-            className={`px-3 py-1 rounded ${
-              currentPage === 1
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <span className="text-sm text-gray-500">
-            Page {currentPage} of {Math.ceil(filteredOrders.length / ordersPerPage)}
-          </span>
-          <button
-            className={`px-3 py-1 rounded ${
-              currentPage >= Math.ceil(filteredOrders.length / ordersPerPage)
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-            onClick={() => setCurrentPage(prev =>
-              Math.min(prev + 1, Math.ceil(filteredOrders.length / ordersPerPage))
-            )}
-            disabled={currentPage >= Math.ceil(filteredOrders.length / ordersPerPage)}
-          >
-            Next
-          </button>
-        </div>
-      </div>
+            <td className="px-4 py-4">
+              <div className="text-sm text-gray-900">
+                {order.items.map((item, index) => (
+                  <div key={index} className="flex items-center">
+                    <span>{item.name}</span>
+                    <span className="mx-1">×</span>
+                    <span className="font-medium">{item.quantity}</span>
+                  </div>
+                ))}
+              </div>
+            </td>
 
-      {/* Export Actions */}
-      <div className="mt-6 flex justify-end space-x-4">
-        <button
-          className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center"
-          onClick={handleExportCSV}
-        >
-          <MdFileDownload className="mr-2" />
-          Export to CSV
-        </button>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
-          onClick={handlePrintOrders}
-        >
-          <MdPrint className="mr-2" />
-          Print Orders
-        </button>
-      </div>
+            <td className="px-4 py-4 whitespace-nowrap">
+              <div className="text-sm font-medium text-gray-900">
+                ${order.totalAmount.toFixed(2)}
+              </div>
+            </td>
+
+            <td className="px-4 py-4 whitespace-nowrap">
+              {editingOrderId === order.id ? (
+                <div className="flex items-center space-x-2">
+                  <select
+                    className="border rounded px-2 py-1 text-sm"
+                    value={order.status}
+                    onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                  >
+                    {statusOptions.map((status) => (
+                      <option key={status} value={status}>{status}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => setEditingOrderId(null)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <span className={`px-2 inline-flex items-center text-xs leading-5 font-semibold rounded-full 
+                    ${order.status === 'delivered' ? 'bg-green-100 text-green-800' : 
+                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                      order.status === 'shipped' ? 'bg-blue-100 text-blue-800' : 
+                      'bg-red-100 text-red-800'}`}>
+                    <StatusIcon status={order.status} />
+                    <span className="ml-1">{order.status}</span>
+                  </span>
+                  <button
+                    onClick={() => setEditingOrderId(order.id)}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    <MdEdit className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </td>
+
+            <td className="px-4 py-4 whitespace-nowrap">
+              <div className="text-sm text-gray-900">
+                {order.createdAt && formatDate(order.createdAt)}
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+
+
+  {/* Pagination */}
+  <div className="mt-4 md:mt-6 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+    <div className="w-full md:w-auto">
+      <select
+        className="w-full md:w-auto border rounded px-2 py-1 text-sm"
+        value={ordersPerPage}
+        onChange={(e) => setOrdersPerPage(Number(e.target.value))}
+      >
+        <option value={10}>10 per page</option>
+        <option value={20}>20 per page</option>
+        <option value={50}>50 per page</option>
+        <option value={100}>100 per page</option>
+      </select>
     </div>
+
+    <div className="flex items-center space-x-2">
+      <button
+        className={`px-3 py-1 rounded ${
+          currentPage === 1
+            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        }`}
+        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+        disabled={currentPage === 1}
+      >
+        Previous
+      </button>
+      <span className="text-sm text-gray-500">
+        Page {currentPage} of {Math.ceil(filteredOrders.length / ordersPerPage)}
+      </span>
+      <button
+        className={`px-3 py-1 rounded ${
+          currentPage >= Math.ceil(filteredOrders.length / ordersPerPage)
+            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        }`}
+        onClick={() => setCurrentPage(prev =>
+          Math.min(prev + 1, Math.ceil(filteredOrders.length / ordersPerPage))
+        )}
+        disabled={currentPage >= Math.ceil(filteredOrders.length / ordersPerPage)}
+      >
+        Next
+      </button>
+    </div>
+  </div>
+
+  {/* Export Actions */}
+  <div className="mt-4 md:mt-6 flex flex-col md:flex-row justify-end space-y-2 md:space-y-0 md:space-x-4">
+    <button
+      className="w-full md:w-auto bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center justify-center"
+      onClick={handleExportCSV}
+    >
+      <MdFileDownload className="mr-2" />
+      Export to CSV
+    </button>
+    <button
+      className="w-full md:w-auto bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center justify-center"
+      onClick={handlePrintOrders}
+    >
+      <MdPrint className="mr-2" />
+      Print Orders
+    </button>
+  </div>
+</div>
   );
 };
 
