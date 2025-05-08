@@ -20,7 +20,7 @@ export const navigationRouts =  [
     {
         name: 'EditProduct',
         path: '/admin/edit-product/:productId',
-        component: <EditProduct/>
+        component: <EditProduct/>   
     },
     {
         name:'Orders',

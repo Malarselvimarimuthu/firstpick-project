@@ -6,15 +6,6 @@ import app from "../firebase/firebaseConfig";
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Define the structure of your Firestore user data
-interface UserData {
-  uid: string;
-  username: string | null;
-  email: string | null;
-  isAdmin: string;
-  createdAt: string;
-}
-
 // Extend FirebaseUser with our custom properties
 interface User extends FirebaseUser {
   isAdmin: boolean; // Changed to boolean for easier conditional checks

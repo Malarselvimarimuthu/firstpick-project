@@ -10,8 +10,6 @@ import {
 import logo from "../../assets/images/Logo.png";
 import "./index.css";
 
-
-
 const Header = ({  }: { }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");

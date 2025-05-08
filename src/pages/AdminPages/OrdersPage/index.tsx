@@ -394,7 +394,7 @@ const OrdersTable: React.FC = () => {
                   <select
                     className="border rounded px-2 py-1 text-sm"
                     value={order.status}
-                    onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                    onChange={(e) => handleStatusUpdate(order.id, e.target.value as "pending" | "shipped" | "delivered" | "cancelled" )}
                   >
                     {statusOptions.map((status) => (
                       <option key={status} value={status}>{status}</option>

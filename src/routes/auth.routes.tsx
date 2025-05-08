@@ -1,5 +1,4 @@
 import { lazy } from "react";
-
 const Cart = lazy(() =>import('../pages/CartPage') );
 const Test = lazy(() => import('../pages/CreateProductsPage'));
 const Billing = lazy(() => import('../pages/BillingDetails'));
